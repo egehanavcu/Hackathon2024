@@ -1,3 +1,3 @@
-# Proje Hakkında
+# Backend
 
-Bu proje, **frontend** ve **backend** bileşenlerinden oluşmaktadır. Bu bileşenler ayrı branch'ler altında yer almaktadır. Gerekli dosya ve kaynaklara erişmek için ilgili branch'lere geçiş yapabilirsiniz.
+Bu branch, projenin **backend** tarafını içermektedir. Backend, **Python** ile geliştirilmiş olup, **FastAPI** kullanılarak oluşturulmuştur.
