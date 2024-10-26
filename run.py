@@ -2,11 +2,12 @@ import os
 import uvicorn
 from app.main import asgi_app, fastapi_app
 from app.routers import users
+from app.routers import auth
 from dotenv import load_dotenv
 
 load_dotenv()
 
-routers = [users.router]
+routers = [users.router, auth.router]
 
 for router in routers:
     fastapi_app.include_router(router)
