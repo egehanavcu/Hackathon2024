@@ -75,10 +75,14 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Yanlış kullanıcı bilgileri")
     
     access_token_expires = timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")))
-    access_token = create_access_token(data={"sub": db_user.email}, expires_delta=access_token_expires)
-    response = JSONResponse(content={"message": "Giriş başarılı"})
-    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=1800)
+    access_token = create_access_token(data={"sub": db_user.email, "is_teacher": db_user.is_teacher}, expires_delta=access_token_expires)
+    response = JSONResponse(content={
+        "message": "Giriş başarılı",
+        "is_teacher": db_user.is_teacher
+    })
+    response.set_cookie(key="access_token", value=access_token, httponly=True, domain="localhost", max_age=1800)
     return response
+
 
 @router.post("/auth/logout")
 def logout():
