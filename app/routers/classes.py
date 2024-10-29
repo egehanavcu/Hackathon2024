@@ -126,8 +126,10 @@ def get_class_details_as_teacher(class_id: int, db: Session = Depends(get_db), c
         progress_percentage = student_task.completion_percentage if student_task else 0
 
         students_with_progress.append({
+            "id": student.id,
             "student_name": f"{student.first_name} {student.last_name}",
-            "progress_percentage": progress_percentage
+            "summary": student_task.code_summary,
+            "progress_percentage": progress_percentage,
         })
 
     return {
