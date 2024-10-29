@@ -27,7 +27,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=60*24*30)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
     return encoded_jwt
@@ -80,7 +80,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "message": "Giriş başarılı",
         "is_teacher": db_user.is_teacher
     })
-    response.set_cookie(key="access_token", value=access_token, httponly=True, domain="localhost", max_age=1800)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, domain="localhost", max_age=60*60*24*30)
     return response
 
 
