@@ -189,3 +189,20 @@ def update_class(class_id: int, class_data: ClassBase, db: Session = Depends(get
     db.commit()
     db.refresh(class_to_update)
     return {"message": "Sınıf bilgileri başarıyla düzenlendi", "class_id": class_to_update.id}
+
+@router.post("/class/{class_id}/update-invite-code")
+def update_invite_code(class_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    if not current_user.is_teacher:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sadece öğretmenler davet kodunu güncelleyebilir")
+
+    class_to_update = db.query(Class).filter(Class.id == class_id).first()
+    if not class_to_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı")
+    
+    new_invite_code = generate_invite_code()
+    
+    class_to_update.invite_code = new_invite_code
+    db.commit()
+    db.refresh(class_to_update)
+    
+    return {"message": "Davet kodu başarıyla güncellendi", "new_invite_code": new_invite_code}
