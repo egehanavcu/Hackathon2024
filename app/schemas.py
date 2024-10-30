@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import List, Dict, Union
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -24,3 +25,7 @@ class TaskUpdate(BaseModel):
 
 class CodeExecutionRequest(BaseModel):
     code: str
+
+class ChatBot(BaseModel):
+    message: str
+    conversation: Union[List[Dict], List[None]]
