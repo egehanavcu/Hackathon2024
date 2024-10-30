@@ -70,7 +70,7 @@ def get_classes_as_teacher(
     if not current_user.is_teacher:
         raise HTTPException(status_code=403, detail="Bu işlemi yapma yetkiniz yok")
 
-    classes = db.query(Class).filter(Class.teacher_id == current_user.id).all()
+    classes = db.query(Class).filter(Class.teacher_id == current_user.id).order_by(Class.id.desc()).all()
     
     result = []
     for cls in classes:
@@ -106,7 +106,8 @@ def get_classes_as_student(
             "teacher_name": teacher_name,
             "student_count": student_count
         })
-    
+
+    result.sort(key=lambda x: x['class_id'], reverse=True)
     return result
 
 @router.get("/class/{class_id}/teacher")
