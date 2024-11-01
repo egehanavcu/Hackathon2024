@@ -142,17 +142,31 @@ def get_class_details_as_teacher(class_id: int, db: Session = Depends(get_db), c
         "students": students_with_progress
     }
 
-@router.get("/class/{class_id}/student")
-def get_class_student_info(class_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.is_teacher:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Bu bilgiye yalnızca öğrenciler erişebilir.")
+@router.get("/class/{class_id}")
+@router.get("/class/{class_id}/{student_id}")
+def get_class_student_info(
+    class_id: int,
+    student_id: int = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not current_user.is_teacher:
+        student_id = current_user.id
+    elif current_user.is_teacher and student_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Öğretmenler için öğrenci ID'si belirtilmelidir."
+        )
 
     class_info = db.query(Class).filter(Class.id == class_id).first()
     if not class_info:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı.")
 
-    student_task = db.query(StudentTask).filter(StudentTask.user_id == current_user.id, StudentTask.class_id == class_id).first()
-    
+    student_task = db.query(StudentTask).filter(
+        StudentTask.user_id == student_id,
+        StudentTask.class_id == class_id
+    ).first()
+
     if not student_task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Öğrenciye ait görev bulunamadı.")
 
@@ -174,6 +188,7 @@ def get_class_student_info(class_id: int, db: Session = Depends(get_db), current
             "progress_percentage": student_task.completion_percentage
         }
     }
+
 
 @router.post("/class/{class_id}/edit")
 def update_class(class_id: int, class_data: ClassBase, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
