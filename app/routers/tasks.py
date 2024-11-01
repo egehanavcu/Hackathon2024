@@ -21,6 +21,11 @@ def assign_task(class_id: int, updated_info: TaskUpdate, db: Session = Depends(g
     class_to_update.task_description = updated_info.task_description
     class_to_update.task_language = updated_info.task_language
 
+    db.query(StudentTask).filter(StudentTask.class_id == class_id).update({
+        "code_summary": "",
+        "completion_percentage": 0
+    })
+
     db.commit()
     db.refresh(class_to_update)
 
@@ -34,13 +39,16 @@ def analyze_task(class_id: int, request: CodeExecutionRequest, db: Session = Dep
     class_info = db.query(Class).filter(Class.id == class_id).first()
     if not class_info:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı.")
+    
+    task_description = class_info.task_description
+    task_language = class_info.task_language
 
+    if not task_description or not task_language:
+        return {"message": "Görev olmadığı için kod analiz edilmedi", "completion_percentage": 0, "code_summary": ""}
+    
     student_task = db.query(StudentTask).filter(StudentTask.user_id == current_user.id, StudentTask.class_id == class_id).first()
     if not student_task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Öğrenci görevi bulunamadı.")
-
-    task_description = class_info.task_description
-    task_language = class_info.task_language
 
     result = analyze_code(task_description, task_language, request.code)
 
@@ -49,7 +57,7 @@ def analyze_task(class_id: int, request: CodeExecutionRequest, db: Session = Dep
     student_task.completion_percentage = result["percentage"]
     db.commit()
 
-    return {"message": "Görev verisi güncellendi", "completion_percentage": result["percentage"], "code_summary": result["summary"]}
+    return {"message": "Kod analiz edildi", "completion_percentage": result["percentage"], "code_summary": result["summary"]}
 
 @router.get("/task/{class_id}/{student_id}")
 def get_student_code_and_summary(class_id: int, student_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
