@@ -129,6 +129,7 @@ def get_class_details_as_teacher(class_id: int, db: Session = Depends(get_db), c
         students_with_progress.append({
             "id": student.id,
             "student_name": f"{student.first_name} {student.last_name}",
+            "code": student_task.code,
             "summary": student_task.code_summary,
             "progress_percentage": progress_percentage,
         })
