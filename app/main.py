@@ -11,7 +11,7 @@ origins = [
 
 Base.metadata.create_all(bind=engine)
 
-sio = socketio.AsyncServer(async_mode="asgi")
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=origins)
 fastapi_app = FastAPI()
 fastapi_app.add_middleware(
     CORSMiddleware,

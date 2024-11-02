@@ -6,6 +6,7 @@ from app.schemas import TaskUpdate, CodeExecutionRequest
 from .auth import get_current_user
 
 from app.gemini.analyzer import analyze_code
+from app.socket_handlers import emit_code_update, emit_code_analyze
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ def assign_task(class_id: int, updated_info: TaskUpdate, db: Session = Depends(g
     class_to_update.task_language = updated_info.task_language
 
     db.query(StudentTask).filter(StudentTask.class_id == class_id).update({
+        "code": "",
         "code_summary": "",
         "completion_percentage": 0
     })
@@ -32,7 +34,7 @@ def assign_task(class_id: int, updated_info: TaskUpdate, db: Session = Depends(g
     return {"message": "Görevlendirme bilgileri başarıyla güncellendi"}
 
 @router.post("/task/{class_id}/analyze")
-def analyze_task(class_id: int, request: CodeExecutionRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def analyze_task(class_id: int, request: CodeExecutionRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.is_teacher:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Bu işlemi yalnızca öğrenciler gerçekleştirebilir.")
 
@@ -49,15 +51,34 @@ def analyze_task(class_id: int, request: CodeExecutionRequest, db: Session = Dep
     student_task = db.query(StudentTask).filter(StudentTask.user_id == current_user.id, StudentTask.class_id == class_id).first()
     if not student_task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Öğrenci görevi bulunamadı.")
-
-    result = analyze_code(task_description, task_language, request.code)
-
+    
     student_task.code = request.code
-    student_task.code_summary = result["summary"]
-    student_task.completion_percentage = result["percentage"]
     db.commit()
 
-    return {"message": "Kod analiz edildi", "completion_percentage": result["percentage"], "code_summary": result["summary"]}
+    teacher_socket_key = db.query(User.socket_key).filter(User.id == class_info.teacher_id).first()[0]
+
+    await emit_code_update(teacher_socket_key, {
+        "class_id": class_id,
+        "student_id": current_user.id,
+        "code": request.code,
+    })
+
+    if request.summarize:
+        result = analyze_code(task_description, task_language, request.code)
+        student_task.code_summary = result["summary"]
+        student_task.completion_percentage = result["percentage"]
+        db.commit()
+
+        await emit_code_analyze(teacher_socket_key, {
+            "class_id": class_id,
+            "student_id": current_user.id,
+            "summary": result["summary"],
+            "completion_percentage":  result["percentage"]
+        })
+
+        return {"message": "Kod analiz edildi", "completion_percentage": result["percentage"], "code_summary": result["summary"]}
+    
+    return {"message": "Kod güncellendi"}
 
 @router.get("/task/{class_id}/{student_id}")
 def get_student_code_and_summary(class_id: int, student_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

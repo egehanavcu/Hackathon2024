@@ -184,6 +184,7 @@ def get_class_student_info(
             "task_language": class_info.task_language,
         },
         "student_task": {
+            "id": student_task.user_id,
             "student_name": f"{student_task.user.first_name} {student_task.user.last_name}",
             "code": student_task.code,
             "progress_percentage": student_task.completion_percentage

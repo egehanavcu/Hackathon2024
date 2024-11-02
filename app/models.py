@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import Table, Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -18,6 +19,7 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     is_teacher = Column(Boolean, default=False)
+    socket_key = Column(String, unique=True, default=lambda: str(uuid.uuid4()))
     
     student_tasks = relationship("StudentTask", back_populates="user")
     classes = relationship("Class", secondary=student_class_association, back_populates="students")

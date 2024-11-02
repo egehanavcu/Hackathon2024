@@ -25,6 +25,7 @@ class TaskUpdate(BaseModel):
 
 class CodeExecutionRequest(BaseModel):
     code: str
+    summarize: bool = False
 
 class ChatBot(BaseModel):
     message: str
