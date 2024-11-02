@@ -119,6 +119,9 @@ def get_class_details_as_teacher(class_id: int, db: Session = Depends(get_db), c
     
     if not class_details:
         raise HTTPException(status_code=404, detail="Sınıf bulunamadı")
+    
+    if class_details.teacher_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
 
     students_with_progress = []
     for student in class_details.students:
@@ -163,6 +166,9 @@ def get_class_student_info(
     if not class_info:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı.")
 
+    if current_user.is_teacher and (class_info.teacher_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
+    
     student_task = db.query(StudentTask).filter(
         StudentTask.user_id == student_id,
         StudentTask.class_id == class_id
@@ -202,6 +208,9 @@ def update_class(class_id: int, class_data: ClassBase, db: Session = Depends(get
     if not class_to_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı")
     
+    if class_to_update.teacher_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
+    
     class_to_update.class_name = class_data.class_name
     class_to_update.university_name = class_data.university_name
     db.commit()
@@ -216,6 +225,9 @@ def update_invite_code(class_id: int, db: Session = Depends(get_db), current_use
     class_to_update = db.query(Class).filter(Class.id == class_id).first()
     if not class_to_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sınıf bulunamadı")
+    
+    if class_to_update.teacher_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
     
     new_invite_code = generate_invite_code()
     

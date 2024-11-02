@@ -19,6 +19,9 @@ def assign_task(class_id: int, updated_info: TaskUpdate, db: Session = Depends(g
     if not class_to_update:
         raise HTTPException(status_code=404, detail="Sınıf bulunamadı")
 
+    if class_to_update.teacher_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
+    
     class_to_update.task_description = updated_info.task_description
     class_to_update.task_language = updated_info.task_language
 
@@ -88,6 +91,9 @@ def get_student_code_and_summary(class_id: int, student_id: int, db: Session = D
     class_exists = db.query(Class).filter(Class.id == class_id).first()
     if not class_exists:
         raise HTTPException(status_code=404, detail="Sınıf bulunamadı")
+    
+    if class_exists.teacher_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Bu sınıfın öğretmeni değilsiniz")
 
     student_task = db.query(StudentTask).filter(StudentTask.user_id == student_id, StudentTask.class_id == class_id).first()
     if not student_task:
