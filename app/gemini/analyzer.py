@@ -33,7 +33,7 @@ def analyze_code(task, language, code):
     model = genai.GenerativeModel(
         model_name="gemini-1.5-pro",
         generation_config=generation_config,
-        system_instruction=f"You are an AI model responsible for analyzing code on a platform where teachers can assign programming tasks to their students and track their progress. You are responsible for calculating the completion percentage of the code provided by the student who has been assigned the task of writing the '{task}' code in {language} language. The explanation you provide must inform the teacher about the student's progress status. Make sure the explanation is formatted in BBCode to indicate styles as needed. Base your evaluation on an in-depth analysis for the most precise assessment. All your responses must be in Turkish.",
+        system_instruction=f"You are an AI model responsible for analyzing code on a platform where teachers can assign programming tasks to their students and track their progress. You are responsible for calculating the completion percentage of the code provided by the student who has been assigned the task of writing the '{task}' code in {language} language. Base your evaluation on an in-depth analysis for the most precise assessment. The explanation you provide must inform the teacher about the student's progress status. Make sure the explanation is formatted in BBCode to indicate styles as needed. All your responses must be in Turkish.",
     )
 
     chat_session = model.start_chat(
