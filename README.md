@@ -10,8 +10,8 @@ Bu proje, kalabalık programlama dersliklerimizde öğretmen ile iletişim imkan
   Öğretmenler, proje üzerinde hızlı ve güvenli bir şekilde sınıf oluşturabilir ve özel davet kodları ile öğrencilerini sınıflara dahil edebilir. Bu özellik, sınıf yönetimini kolaylaştırarak öğretmenlerin zamandan tasarruf etmelerini sağlar.
 
 - **Görev Atama Sistemi:**  
-  Her sınıfa özel görevler atanabilir ve öğrenciler bu görevler üzerinde çalışabilir. Böylece öğretmenler, öğrencilere bireysel veya grup bazında görevler vererek derslerin ilerleyişini daha iyi yönetebilir.
-
+  Öğretmenler, öğrencilere sınıf genelinde görevler verebilir ve öğrenciler bu görevleri kendilerine özel oluşturulmuş kod editöründe görüntüleyebilir, gerçekleştirebilir. Bu sayede öğretmenler, derslerin ilerleyişini daha verimli bir şekilde yönetebilir.
+  
 - **Yapay Zeka Destekli Gerçek Zamanlı İlerleme Takibi:**  
   Projenin entegre yapay zeka algoritması, öğrencilerin yazdığı kodları analiz eder, görev tamamlama yüzdesini hesaplar ve öğretmenlere öğrencilerin performansını gösterir. Eksik veya hatalı kod satırları ile ilgili öğretmenlere detaylı geri bildirim sağlanarak öğretmenlerin öğrencilerin zorlandığı noktaları hızla fark etmesi mümkün olur.
 
