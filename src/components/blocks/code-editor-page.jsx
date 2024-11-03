@@ -145,11 +145,11 @@ export const CodeEditorPage = ({ classId, studentId }) => {
         !loading &&
         currentCode &&
         lastCodeUpdate &&
-        Date.now() - lastCodeUpdate <= 8000
+        Date.now() - lastCodeUpdate <= 65000
       ) {
         analyzeTask(currentCode, true);
       }
-    }, 5000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [lastCodeUpdate, currentCode]);
@@ -196,7 +196,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
         analyzeTask(codePrompt, false);
       } else if (action === "runStart" && !studentId) {
         analyzeTask(codePrompt, true);
-        setLastCodeUpdate(Date.now() - 10000);
+        setLastCodeUpdate(Date.now() - 70000);
       }
     };
   }, []);
