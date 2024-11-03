@@ -1,3 +1,8 @@
+import "../globals.css";
+
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+
 export const metadata = {
   title: "TakımYıldız",
   description: "BTK Hackathon projesi",
@@ -14,7 +19,16 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="font-dm">{children}</body>
+      <body className="font-dm">
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="flex flex-col w-full px-8 py-4">
+            <SidebarTrigger className="mb-2" />
+
+            {children}
+          </main>
+        </SidebarProvider>
+      </body>
     </html>
   );
 }
