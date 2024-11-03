@@ -12,7 +12,7 @@ export const TextBlurEffect = ({ words, className, duration = 0.5 }) => {
       initial={{ opacity: 0, filter: "blur(10px)" }}
       animate={{ opacity: 1, filter: "blur(0px)" }}
       transition={{ duration }}
-      className={cn(className, "dark:text-white text-black")}
+      className={cn("dark:text-white text-black", className)}
       dangerouslySetInnerHTML={{
         __html: parser.toHTML(words),
       }}

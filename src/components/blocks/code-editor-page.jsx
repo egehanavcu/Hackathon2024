@@ -3,6 +3,8 @@
 import { Code, ListTodo, User } from "lucide-react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { AppBreadcrumb } from "@/components/app-breadcrumb";
+import confetti from "canvas-confetti";
+import { TextBlurEffect } from "../ui/text-blur-effect";
 
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
@@ -18,6 +20,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
   const [classInfo, setClassInfo] = useState(null);
   const [studentTask, setStudentTask] = useState(null);
   const [currentCode, setCurrentCode] = useState("");
+  const [completionPercentage, setCompletionPercentage] = useState(0);
   const [lastCodeUpdate, setLastCodeUpdate] = useState(null);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -47,6 +50,66 @@ export const CodeEditorPage = ({ classId, studentId }) => {
     ];
   }
 
+  async function analyzeTask(code, summarize) {
+    try {
+      const response = await fetch(
+        `${BACKEND_DOMAIN}/task/${classId}/analyze`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            code,
+            summarize,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (!Number.isNaN(data.completion_percentage)) {
+          setCompletionPercentage(data.completion_percentage);
+        }
+      } else {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const showConfetti = () => {
+    const end = Date.now() + 1 * 1000;
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+    const frame = () => {
+      if (Date.now() > end) return;
+
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      });
+
+      requestAnimationFrame(frame);
+    };
+
+    frame();
+  };
+
   useEffect(() => {
     async function fetchClassStudentInfo() {
       try {
@@ -64,6 +127,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
         const data = await response.json();
         setClassInfo(data.class_info);
         setStudentTask(data.student_task);
+        setCompletionPercentage(data.student_task.progress_percentage);
         setCurrentCode(data.student_task.code);
       } catch (err) {
         setError(err.message);
@@ -108,6 +172,12 @@ export const CodeEditorPage = ({ classId, studentId }) => {
           }
         });
 
+        socket.on("code_analyze", (data) => {
+          if (classId === data.class_id && studentId === data.student_id) {
+            setCompletionPercentage(data.completion_percentage);
+          }
+        });
+
         return () => {
           socket.disconnect();
         };
@@ -130,31 +200,6 @@ export const CodeEditorPage = ({ classId, studentId }) => {
       }
     };
   }, []);
-
-  async function analyzeTask(code, summarize) {
-    try {
-      const response = await fetch(
-        `${BACKEND_DOMAIN}/task/${classId}/analyze`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            code,
-            summarize,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-  }
 
   useEffect(() => {
     if (isIframeLoaded && editorRef.current) {
@@ -179,6 +224,12 @@ export const CodeEditorPage = ({ classId, studentId }) => {
       );
     }
   }, [isIframeLoaded, studentTask, editorRef.current]);
+
+  useEffect(() => {
+    if (completionPercentage === 100) {
+      showConfetti();
+    }
+  }, [completionPercentage]);
 
   return (
     <>
@@ -231,6 +282,24 @@ export const CodeEditorPage = ({ classId, studentId }) => {
               )}
             </span>
           </p>
+
+          {completionPercentage === 100 && (
+            <p className="flex items-center mb-4">
+              <span className="text-green-600 font-bold">
+                {studentId ? (
+                  <TextBlurEffect
+                    words="Öğrenci görevi başarıyla tamamladı!"
+                    className="text-green-600"
+                  />
+                ) : (
+                  <TextBlurEffect
+                    words="Görevi başarıyla tamamladınız!"
+                    className="text-green-600"
+                  />
+                )}
+              </span>
+            </p>
+          )}
 
           {studentId &&
             classInfo.task_description &&
