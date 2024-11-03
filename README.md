@@ -26,3 +26,9 @@ Proje, öğretmenlere öğrencilerin öğrenme süreçlerini daha iyi yönetme v
 - **Frontend:** Kullanıcı arayüzü NextJS ile geliştirilmiştir.
 - **UI Kütüphanesi:** Kullanıcı dostu bir arayüz sağlamak için ShadCN UI kütüphanesi tercih edilmiştir.
 - **Gerçek Zamanlı Veri Aktarımı:** Sınıflarda ve görevlerde anlık veri aktarımı için Socket.IO entegrasyonu gerçekleştirilmiştir.
+
+## Ekip Üyeleri
+
+- **Egehan Avcu:** Projenin **frontend** kısmını geliştirerek kullanıcı arayüzünün oluşturulmasını sağladı.
+- **Yusuf Açmacı:** Projenin **backend** kısmını geliştirerek sunucu tarafındaki işleyişin sorunsuz çalışmasını temin etti.
+- **Kaan Necip Kalp:** Projenin **tasarım** kısmını hazırlayarak kullanıcı deneyimini artıran düzenlemeler yaptı, estetik ve kullanıcı dostu bir arayüz oluşturulmasına katkıda bulundu.
