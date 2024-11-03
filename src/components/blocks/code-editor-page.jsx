@@ -77,6 +77,9 @@ export const CodeEditorPage = ({ classId, studentId }) => {
       }
     } catch (err) {
       setError(err.message);
+      if (summarize) {
+        setLastCodeUpdate(Date.now());
+      }
     }
   }
 
