@@ -80,10 +80,10 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "message": "Giriş başarılı",
         "is_teacher": db_user.is_teacher
     })
-    response.set_cookie(key="access_token", value=access_token, httponly=True, domain="localhost", max_age=60*60*24*30)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, domain="egehan.dev", max_age=60*60*24*30)
     
     if db_user.is_teacher:
-        response.set_cookie(key="socket_key", value=db_user.socket_key, domain="localhost", max_age=60*60*24*30)
+        response.set_cookie(key="socket_key", value=db_user.socket_key, domain="egehan.dev", max_age=60*60*24*30)
     return response
 
 

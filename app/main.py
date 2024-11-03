@@ -5,8 +5,7 @@ from app.models import User, StudentTask, Class
 import socketio
 
 origins = [
-    "http://localhost",
-    "http://localhost:3000",
+    "https://egehan.dev",
 ]
 
 Base.metadata.create_all(bind=engine)
