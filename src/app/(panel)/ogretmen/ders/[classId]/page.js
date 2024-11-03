@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
-import { LANGUAGE_DETAILS } from "@/lib/constants";
+import { BACKEND_DOMAIN, LANGUAGE_DETAILS } from "@/lib/constants";
 
 export default function ClassPage({ params }) {
   const [studentsData, setStudentsData] = useState([]);
@@ -38,7 +38,7 @@ export default function ClassPage({ params }) {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/class/${classId}/update-invite-code`,
+        `${BACKEND_DOMAIN}/class/${classId}/update-invite-code`,
         {
           method: "POST",
           credentials: "include",
@@ -71,7 +71,7 @@ export default function ClassPage({ params }) {
     const fetchClassDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/class/${classId}/teacher`,
+          `${BACKEND_DOMAIN}/class/${classId}/teacher`,
           {
             credentials: "include",
           }
@@ -101,7 +101,7 @@ export default function ClassPage({ params }) {
     const socketKey = Cookies.get("socket_key");
 
     if (socketKey) {
-      const socket = io("http://localhost:8000");
+      const socket = io(BACKEND_DOMAIN);
 
       socket.on("connect", () => {
         console.log("Connected to the Socket.IO server");

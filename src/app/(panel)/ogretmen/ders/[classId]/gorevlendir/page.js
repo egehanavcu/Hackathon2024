@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BACKEND_DOMAIN } from "@/lib/constants";
 
 export default function ClassAssignTaskPage({ params }) {
   const classId = params.classId;
@@ -34,20 +35,17 @@ export default function ClassAssignTaskPage({ params }) {
   const router = useRouter();
 
   const handleAssignTask = async () => {
-    const response = await fetch(
-      `http://localhost:8000/task/${classId}/assign`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          task_description: assignmentName,
-          task_language: taskLanguage,
-        }),
-      }
-    );
+    const response = await fetch(`${BACKEND_DOMAIN}/task/${classId}/assign`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        task_description: assignmentName,
+        task_language: taskLanguage,
+      }),
+    });
 
     if (response.ok) {
       router.push(`/ogretmen/ders/${classId}`);
@@ -59,7 +57,7 @@ export default function ClassAssignTaskPage({ params }) {
   useEffect(() => {
     const fetchDetails = async () => {
       const response = await fetch(
-        `http://localhost:8000/class/${classId}/teacher`,
+        `${BACKEND_DOMAIN}/class/${classId}/teacher`,
         {
           headers: {
             "Content-Type": "application/json",

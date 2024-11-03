@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { UNIVERSITIES } from "@/lib/constants";
+import { BACKEND_DOMAIN, UNIVERSITIES } from "@/lib/constants";
 
 export const ClassEditDialog = ({
   item,
@@ -49,20 +49,17 @@ export const ClassEditDialog = ({
       const universityNameToUpdate =
         updatedUniversityName || classToUpdate.university_name;
 
-      const response = await fetch(
-        `http://localhost:8000/class/${class_id}/edit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            class_name: classNameToUpdate,
-            university_name: universityNameToUpdate,
-          }),
-        }
-      );
+      const response = await fetch(`${BACKEND_DOMAIN}/class/${class_id}/edit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          class_name: classNameToUpdate,
+          university_name: universityNameToUpdate,
+        }),
+      });
 
       if (response.ok) {
         const updatedClasses = classes.map((item) =>

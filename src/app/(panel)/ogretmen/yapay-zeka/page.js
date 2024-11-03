@@ -17,6 +17,7 @@ import TypingAnimation from "@/components/ui/typing-animation";
 import { TextBlurEffect } from "@/components/ui/text-blur-effect";
 
 import { useState, useEffect, useRef } from "react";
+import { BACKEND_DOMAIN } from "@/lib/constants";
 
 export default function AIChatPage() {
   const [isInputHidden, setIsInputHidden] = useState(true);
@@ -42,7 +43,7 @@ export default function AIChatPage() {
     setIsInputHidden(true);
     setIsClassLocked(true);
 
-    fetch(`http://localhost:8000/class/${value}/teacher`, {
+    fetch(`${BACKEND_DOMAIN}/class/${value}/teacher`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +94,7 @@ export default function AIChatPage() {
         }\n` + userMessage;
     }
 
-    const response = await fetch("http://localhost:8000/chat-bot", {
+    const response = await fetch(`${BACKEND_DOMAIN}/chat-bot`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +122,7 @@ export default function AIChatPage() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/class/all/teacher", {
+    fetch(`${BACKEND_DOMAIN}/class/all/teacher`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",

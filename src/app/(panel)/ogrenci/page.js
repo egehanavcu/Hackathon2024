@@ -17,6 +17,7 @@ import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { Label } from "@/components/ui/label";
 
 import { useEffect, useState } from "react";
+import { BACKEND_DOMAIN } from "@/lib/constants";
 
 export default function StudentHomePage() {
   const [classes, setClasses] = useState(undefined);
@@ -26,7 +27,7 @@ export default function StudentHomePage() {
   const [loading, setLoading] = useState(true);
 
   async function getClassesAsStudent() {
-    const response = await fetch("http://localhost:8000/class/all/student", {
+    const response = await fetch(`${BACKEND_DOMAIN}/class/all/student`, {
       credentials: "include",
     });
 
@@ -38,7 +39,7 @@ export default function StudentHomePage() {
   }
 
   async function joinClass(inviteCode) {
-    const response = await fetch("http://localhost:8000/class/join", {
+    const response = await fetch(`${BACKEND_DOMAIN}/class/join`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

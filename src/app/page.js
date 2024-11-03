@@ -3,20 +3,6 @@
 import "./globals.css";
 
 import { Code, ListTodo } from "lucide-react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
-import SparklesText from "@/components/ui/sparkles-text";
-import { BorderBeam } from "@/components/ui/border-beam";
-import AnimatedGradientText from "@/components/ui/animated-gradient-text";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useTypewriter } from "@/hooks/use-typewriter";
-import { cn } from "@/lib/utils";
-
 import {
   Select,
   SelectContent,
@@ -26,6 +12,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
+import SparklesText from "@/components/ui/sparkles-text";
+import { BorderBeam } from "@/components/ui/border-beam";
+import AnimatedGradientText from "@/components/ui/animated-gradient-text";
+import CodeEditor from "@uiw/react-textarea-code-editor";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTypewriter } from "@/hooks/use-typewriter";
+import { cn } from "@/lib/utils";
+import { BACKEND_DOMAIN } from "@/lib/constants";
 
 const codeSnippet = `#     Bubble sort
 
@@ -57,7 +57,7 @@ export default function HomePage() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8000/auth/login", {
+      const response = await fetch(`${BACKEND_DOMAIN}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export default function HomePage() {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch("http://localhost:8000/auth/register", {
+      const response = await fetch(`${BACKEND_DOMAIN}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

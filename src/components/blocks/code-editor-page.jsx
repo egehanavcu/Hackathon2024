@@ -7,7 +7,11 @@ import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
-import { COMMENT_LINES, LANGUAGE_DETAILS } from "@/lib/constants";
+import {
+  BACKEND_DOMAIN,
+  COMMENT_LINES,
+  LANGUAGE_DETAILS,
+} from "@/lib/constants";
 
 export const CodeEditorPage = ({ classId, studentId }) => {
   const editorRef = useRef();
@@ -47,7 +51,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
     async function fetchClassStudentInfo() {
       try {
         const response = await fetch(
-          `http://localhost:8000/class/${
+          `${BACKEND_DOMAIN}/class/${
             studentId ? `${classId}/${studentId}` : `${classId}`
           }`,
           {
@@ -91,7 +95,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
       const socketKey = Cookies.get("socket_key");
 
       if (socketKey) {
-        const socket = io("http://localhost:8000");
+        const socket = io(BACKEND_DOMAIN);
 
         socket.on("connect", () => {
           console.log("Connected to the Socket.IO server");
@@ -130,7 +134,7 @@ export const CodeEditorPage = ({ classId, studentId }) => {
   async function analyzeTask(code, summarize) {
     try {
       const response = await fetch(
-        `http://localhost:8000/task/${classId}/analyze`,
+        `${BACKEND_DOMAIN}/task/${classId}/analyze`,
         {
           method: "POST",
           headers: {

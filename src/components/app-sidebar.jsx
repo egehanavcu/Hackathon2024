@@ -22,6 +22,7 @@ import {
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { BACKEND_DOMAIN } from "@/lib/constants";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -54,7 +55,7 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:8000/auth/logout", {
+      const response = await fetch(`${BACKEND_DOMAIN}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

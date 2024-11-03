@@ -1,3 +1,5 @@
+export const BACKEND_DOMAIN = "http://localhost:8000";
+
 export const UNIVERSITIES = [
   "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi",
   "Çukurova Üniversitesi",

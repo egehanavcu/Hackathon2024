@@ -30,10 +30,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AppBreadcrumb } from "@/components/app-breadcrumb";
 
-import { UNIVERSITIES } from "@/lib/constants";
-
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { BACKEND_DOMAIN, UNIVERSITIES } from "@/lib/constants";
 
 export default function TeacherHomePage() {
   const [classes, setClasses] = useState(undefined);
@@ -48,7 +47,7 @@ export default function TeacherHomePage() {
   const handleCreateClass = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/class/create", {
+      const response = await fetch(`${BACKEND_DOMAIN}/class/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,15 +102,12 @@ export default function TeacherHomePage() {
     async function fetchClasses() {
       setLoading(true);
       try {
-        const response = await fetch(
-          "http://localhost:8000/class/all/teacher",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${BACKEND_DOMAIN}/class/all/teacher`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
         if (response.ok) {
           const data = await response.json();
           setClasses(data);
