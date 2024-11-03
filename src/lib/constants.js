@@ -1,4 +1,4 @@
-export const BACKEND_DOMAIN = "http://localhost:8000";
+export const BACKEND_DOMAIN = "https://backend.egehan.dev";
 
 export const UNIVERSITIES = [
   "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi",
